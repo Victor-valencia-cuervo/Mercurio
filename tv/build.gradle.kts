@@ -387,6 +387,13 @@ dependencies {
     // ---- Discord Rich Presence: the gateway is a WebSocket, so Ktor needs the plugin ----
     implementation("io.ktor:ktor-client-websockets:3.5.2")
 
+    // ---- Mercurio cloud (Supabase): the TV app compiles the phone app's
+    // sources (sourceSets above), so it needs the client the phone app uses.
+    // Ktor's engine comes from the okhttp client already on this classpath.
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.9.0-beta-1"))
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+
     // ---- YouTube stream extraction: live-benchmarked client catalog + cipher tiers ----
     implementation("com.github.MetrolistGroup.innertubex:innertubex-android:v0.7.0")
 

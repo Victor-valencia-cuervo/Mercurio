@@ -54,7 +54,7 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build Prod Release APK
-      run: ./gradlew assembleProdRelease
+      run: ./gradlew :app:assembleProdRelease :wearos:assembleProdRelease
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
