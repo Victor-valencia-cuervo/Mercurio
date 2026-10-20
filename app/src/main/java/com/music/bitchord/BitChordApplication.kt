@@ -1,6 +1,7 @@
 package com.music.bitchord
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import coil3.ImageLoader
@@ -16,7 +17,6 @@ import okhttp3.OkHttpClient
 import com.music.bitchord.auth.AuthStore
 import com.music.bitchord.data.DebugLog
 import com.music.bitchord.data.lyrics.LyricsTranslation
-import androidx.appcompat.app.AppCompatDelegate
 import com.music.bitchord.ui.player.AndroidPlayerHost
 import com.music.bitchord.ui.player.PlayerPlatform
 import com.music.bitchord.data.canvas.CanvasCache
@@ -116,6 +116,13 @@ class BitChordApplication : Application(), SingletonImageLoader.Factory {
             CoroutineScope(Dispatchers.IO).launch { Innertube.ensureSessionScope() }
         }
         AppSettings.init(this, authStore)
+        // Mercurio: clima fuera de la app (AlarmManager)
+        try {
+            val am = getSystemService(android.content.Context.ALARM_SERVICE) as android.app.AlarmManager
+            val intent = android.content.Intent(this, com.music.bitchord.data.weather.WeatherAlarmReceiver::class.java)
+            val pi = android.app.PendingIntent.getBroadcast(this, 0, intent, android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE)
+            am.setInexactRepeating(android.app.AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 60000, android.app.AlarmManager.INTERVAL_HALF_DAY, pi)
+        } catch (e: Exception) { }
         // Before anything resolves a track: an addon with `checkValidLossless`
         // is gated on this, and the gate reads "no" until it has looked.
         com.music.bitchord.playback.audio.LosslessOutput.init(this)

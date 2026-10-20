@@ -33,6 +33,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -60,6 +61,7 @@ import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Storage
+import androidx.compose.material.icons.rounded.WbSunny
 import com.music.bitchord.ui.icons.BitChordIcons
 import coil3.compose.AsyncImage
 import com.music.bitchord.data.model.CARD_ART_PX
@@ -142,6 +144,10 @@ fun HomeScreen(
     leadHero: Boolean = true,
     currentSong: Song? = null,
     isPlaying: Boolean = false,
+    onOpenWeather: (() -> Unit)? = null,
+    onOpenNotes: (() -> Unit)? = null,
+    onOpenPets: (() -> Unit)? = null,
+    onOpenCloud: (() -> Unit)? = null,
 ) {
     val recentsViewType by AppUi.host.homeRecentsViewType.collectAsStateWithLifecycle()
 
@@ -167,6 +173,53 @@ fun HomeScreen(
         ) {
             if (title != null) {
                 item { HomeTitle(title) }
+            }
+            if (onOpenWeather != null) {
+                item {
+                    Card(
+                        onClick = onOpenWeather,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.WbSunny, contentDescription = null)
+                            Spacer(Modifier.width(12.dp))
+                            Text("Clima Mercurio", style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                }
+            }
+            if (onOpenNotes != null) {
+                item {
+                    Card(onClick = onOpenNotes, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.LibraryMusic, contentDescription = null)
+                            Spacer(Modifier.width(12.dp))
+                            Text("Notas Mercurio", style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                }
+            }
+            if (onOpenPets != null) {
+                item {
+                    Card(onClick = onOpenPets, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.LibraryMusic, contentDescription = null)
+                            Spacer(Modifier.width(12.dp))
+                            Text("Mascotas Mercurio", style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                }
+            }
+            if (onOpenCloud != null) {
+                item {
+                    Card(onClick = onOpenCloud, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.LibraryMusic, contentDescription = null)
+                            Spacer(Modifier.width(12.dp))
+                            Text("Nube Mercurio", style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
+                }
             }
             if (!signedIn && onSignIn != null) {
                 item {

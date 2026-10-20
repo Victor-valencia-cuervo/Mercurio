@@ -99,6 +99,11 @@ enum class ThemeMode(val label: String) {
     SYSTEM("System"), LIGHT("Light"), DARK("Dark")
 }
 
+enum class AppFontFamily(val label: String) {
+    SF_PRO("SF Pro (BitChord)"),
+    CORMORANT("Cormorant (Hermes)")
+}
+
 /**
  * Which of the equaliser's two tabs is driving the sound.
  *
@@ -340,6 +345,7 @@ object AppSettings {
 
     val playbackSpeed = MutableStateFlow(1.0f)
     val themeMode = MutableStateFlow(ThemeMode.DARK)
+val fontFamily = MutableStateFlow(AppFontFamily.SF_PRO)
 
     /** Keep playing similar music once the queue runs out. */
     val autoplay = MutableStateFlow(true)
@@ -849,6 +855,9 @@ object AppSettings {
         themeMode.value = runCatching {
             ThemeMode.valueOf(prefs.getString(KEY_THEME, null) ?: "DARK")
         }.getOrDefault(ThemeMode.DARK)
+        fontFamily.value = runCatching {
+            AppFontFamily.valueOf(prefs.getString(KEY_FONT, null) ?: "SF_PRO")
+        }.getOrDefault(AppFontFamily.SF_PRO)
         autoplay.value = prefs.getBoolean(KEY_AUTOPLAY, true)
         shuffleEnabled.value = prefs.getBoolean(KEY_SHUFFLE_ENABLED, false)
         repeatMode.value = prefs.getInt(KEY_REPEAT_MODE, Player.REPEAT_MODE_OFF)
@@ -1213,6 +1222,11 @@ object AppSettings {
     fun setThemeMode(value: ThemeMode) {
         themeMode.value = value
         prefs.edit().putString(KEY_THEME, value.name).apply()
+    }
+
+    fun setFontFamily(value: AppFontFamily) {
+        fontFamily.value = value
+        prefs.edit().putString(KEY_FONT, value.name).apply()
     }
 
     fun setReduceAnimation(value: Boolean) {
@@ -2011,6 +2025,7 @@ object AppSettings {
     private const val KEY_EQ_BANDS = "equalizer_bands"
     private const val KEY_SPEED = "playback_speed"
     private const val KEY_THEME = "theme_mode"
+private const val KEY_FONT = "font_family"
     private const val KEY_AUTOPLAY = "autoplay"
     private const val KEY_SHUFFLE_ENABLED = "shuffle_enabled"
     private const val KEY_REPEAT_MODE = "repeat_mode"

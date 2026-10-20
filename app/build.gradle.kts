@@ -13,7 +13,7 @@ plugins {
  * Signing details, kept out of the repository in `keystore.properties`
  * (see keystore.properties.example). Absent on a fresh checkout, in which case
  * the release build still runs and simply comes out unsigned rather than
- * failing â€” only whoever holds the key can produce a shippable APK.
+ * failing ÔÇö only whoever holds the key can produce a shippable APK.
  */
 val signing = Properties().apply {
     val file = rootProject.file("keystore.properties")
@@ -36,8 +36,8 @@ val lastfmSecret: String = (
     ).trim()
 
 /*
- * Where Listen Together's party server lives. Not a credential â€” it is a public
- * URL, and every device in a party has to be pointed at the same one â€” but it is
+ * Where Listen Together's party server lives. Not a credential ÔÇö it is a public
+ * URL, and every device in a party has to be pointed at the same one ÔÇö but it is
  * deployment-specific rather than a property of the source, which is what puts
  * it here beside the others instead of in a constant.
  *
@@ -120,7 +120,7 @@ android {
         }
         create("prod") {
             dimension = "env"
-            // Matches defaultConfig â€” this is the package already shipped/installed.
+            // Matches defaultConfig ÔÇö this is the package already shipped/installed.
         }
     }
 
@@ -129,7 +129,7 @@ android {
         // the keystore rather than containing it, and both are gitignored
         // separately, so a checkout can easily end up with the one and not the
         // other. A signing config pointing at a keystore that is not on disk
-        // fails the release build outright at validateSigningRelease â€” which is
+        // fails the release build outright at validateSigningRelease ÔÇö which is
         // exactly the failure the unsigned fallback above exists to avoid, so
         // the keystore has to be looked for rather than assumed.
         val store = signing.getProperty("storeFile")?.let { rootProject.file(it) }
@@ -148,18 +148,18 @@ android {
             if (betaSuffix.isNotEmpty()) versionNameSuffix = "-$betaSuffix"
         }
         release {
-            // Carried here too â€” see [betaSuffix]. A sideloaded beta is a
+            // Carried here too ÔÇö see [betaSuffix]. A sideloaded beta is a
             // release build, and it is the one that most needs the marker.
             if (betaSuffix.isNotEmpty()) versionNameSuffix = "-$betaSuffix"
             /*
              * On for what it does to speed, not size. Compose is written to be
-             * run through R8 â€” without it every composable keeps the debug-era
+             * run through R8 ÔÇö without it every composable keeps the debug-era
              * shape the compiler emits, and the whole UI runs measurably slower.
              *
              * Nothing is renamed (-dontobfuscate), and every library that reaches
-             * for classes by name â€” Rhino running YouTube's player JavaScript,
+             * for classes by name ÔÇö Rhino running YouTube's player JavaScript,
              * NewPipe, InnerTubeX, QuickJS, SMBJ and BouncyCastle, ONNX's JNI,
-             * protobuf-lite, Ktor â€” is kept whole: see proguard-rules.pro. What R8
+             * protobuf-lite, Ktor ÔÇö is kept whole: see proguard-rules.pro. What R8
              * is left to optimise is Compose, Media3, coroutines and our own
              * code, which is where the time goes. Checked on a device through the
              * `benchmark` build type below before it ships.
@@ -177,7 +177,7 @@ android {
          * The release build, installable next to the dev and prod apps: same R8,
          * same non-debuggable runtime, signed with the debug key under its own
          * package so it never replaces either. For measuring startup the way
-         * users get it and for checking that shrinking broke nothing â€” a debug
+         * users get it and for checking that shrinking broke nothing ÔÇö a debug
          * build is interpreted and verified at runtime and says little about
          * either. `./gradlew installDevBenchmark`.
          */
@@ -209,7 +209,7 @@ android {
             // Unit tests run against a stub android.jar whose methods throw
             // rather than return. That is the right default for anything whose
             // behaviour depends on the framework, and wrong for android.util.Log
-            // â€” which [TrackLog] calls on every decision the source layer makes,
+            // ÔÇö which [TrackLog] calls on every decision the source layer makes,
             // so a test of that layer fails on the logging rather than on the
             // logic it was written to check.
             isReturnDefaultValues = true
@@ -266,8 +266,8 @@ dependencies {
     implementation(composeBom)
     // Pinned above the BOM's 1.7.6: [IosOverscroll] uses OverscrollFactory,
     // which that version doesn't have. Newer foundation alongside the BOM's
-    // older ui/material3 is a combination Compose supports deliberately â€”
-    // foundation depends on ui, not the reverse â€” and this exact pairing was
+    // older ui/material3 is a combination Compose supports deliberately ÔÇö
+    // foundation depends on ui, not the reverse ÔÇö and this exact pairing was
     // already in effect (foundation was reaching 1.10.0 transitively through
     // the liquid-glass library before that dependency was removed).
     implementation("androidx.compose.foundation:foundation:1.10.0")
@@ -283,6 +283,10 @@ dependencies {
     // ProcessLifecycleOwner: whether the app is on screen, for the open-app count.
     implementation("androidx.lifecycle:lifecycle-process:2.8.7")
     implementation("androidx.core:core-ktx:1.15.0")
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.9.0-beta-1"))
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:3.0.3")
     implementation("androidx.appcompat:appcompat:1.7.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
@@ -291,13 +295,13 @@ dependencies {
     implementation("androidx.media3:media3-session:1.11.0")
     implementation("androidx.media3:media3-common:1.11.0")
     implementation("androidx.media3:media3-datasource-okhttp:1.11.0")
-    // Audio is progressive, but Apple serves its motion artwork as HLS â€” this
+    // Audio is progressive, but Apple serves its motion artwork as HLS ÔÇö this
     // is what lets the animated sleeve play it. See CanvasArtworkPlayer.
     implementation("androidx.media3:media3-exoplayer-hls:1.11.0")
     // Source modules hand back manifests rather than files, and which kind is
     // the backend's choice, not ours: the Tidal one served `.m3u8` until
     // September 2026 and `.mpd` after it, for the same track and the same
-    // request. Without this artifact a DASH manifest is not merely unplayed â€”
+    // request. Without this artifact a DASH manifest is not merely unplayed ÔÇö
     // DefaultMediaSourceFactory cannot build a source for it, falls back to
     // progressive, and the extractors try to sniff XML as audio
     // (ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED). See withResolvedStreamType.
@@ -316,7 +320,7 @@ dependencies {
     // ---- Images: Coil 3 + Palette (dominant colors for the mesh gradient) ----
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
-    // Title logos are PNG, but artist signatures are usually SVG â€” without
+    // Title logos are PNG, but artist signatures are usually SVG ÔÇö without
     // this Coil can't decode them (see ArtistSignatureRepository).
     implementation("io.coil-kt.coil3:coil-svg:3.0.4")
     implementation("androidx.palette:palette-ktx:1.0.0")
@@ -327,7 +331,7 @@ dependencies {
 
     // ---- QR encoding, for the party invite ----
     // `core` only: the `android-core`/`zxing-android-embedded` artifacts bring
-    // a camera scanner and an Activity with it, and nothing here reads a code â€”
+    // a camera scanner and an Activity with it, and nothing here reads a code ÔÇö
     // a party is joined by tapping somebody else's link or typing six
     // characters. This produces the bit matrix; the drawing is ours, in
     // [com.music.bitchord.ui.components.QrCode], so the result is styled like
@@ -335,7 +339,7 @@ dependencies {
     implementation("com.google.zxing:core:3.5.3")
 
     // ---- Markdown rendering (release notes in the update dialog) ----
-    // Pure Compose, not an AndroidView wrapper â€” needed so the text composes
+    // Pure Compose, not an AndroidView wrapper ÔÇö needed so the text composes
     // correctly under the dialog's Haze blur.
     implementation("com.halilibo.compose-richtext:richtext-ui-material3:0.20.0")
     implementation("com.halilibo.compose-richtext:richtext-commonmark:0.20.0")
@@ -359,7 +363,7 @@ dependencies {
     // Pinned to v0.26.3, not the newer v0.26.4: v0.26.4's player-JS parser fails with
     // "Could not parse deobfuscation function" on the current player build, which blocks
     // WEB_REMIX's ciphered formats entirely. v0.26.3 solves the same signatures cleanly
-    // against the same player JS â€” confirmed side by side against PixelMusic-ref, which
+    // against the same player JS ÔÇö confirmed side by side against PixelMusic-ref, which
     // pins v0.26.3 and doesn't hit the parse failure.
     //
     // Consumed as a stripped jar rather than as the module, so its own
@@ -396,7 +400,7 @@ dependencies {
     // The framework and the router only. media3-cast is left out on purpose:
     // its CastPlayer hands the receiver whatever URI a MediaItem carries, and
     // ours are `bitchord://` addresses that only the service's resolver can
-    // turn into a real stream â€” see [com.music.bitchord.playback.cast.CastPlayback].
+    // turn into a real stream ÔÇö see [com.music.bitchord.playback.cast.CastPlayback].
     implementation("com.google.android.gms:play-services-cast-framework:22.2.0")
     implementation("androidx.mediarouter:mediarouter:1.8.1")
 
@@ -409,7 +413,7 @@ dependencies {
 
     // ---- "BitChord for Wear OS": the first install onto a watch ----
     // Without the Play Store only ADB can install on a watch, so this phone is
-    // the ADB client, over the watch's Wireless debugging â€” see WatchInstaller.
+    // the ADB client, over the watch's Wireless debugging ÔÇö see WatchInstaller.
     // GPL-3.0/Apache-2.0 dual-licensed. Its own BouncyCastle (jdk15to18) is the
     // same classes as the jdk18on one SMBJ already brings, so it is excluded;
     // bcpkix supplies the certificate the ADB client identifies itself with.
@@ -431,8 +435,8 @@ dependencies {
 }
 
 /*
- * A debug APK lands on the device uncompiled â€” `dumpsys package dexopt` reports
- * it as run-from-apk â€” so every launch verifies the whole app's classes at
+ * A debug APK lands on the device uncompiled ÔÇö `dumpsys package dexopt` reports
+ * it as run-from-apk ÔÇö so every launch verifies the whole app's classes at
  * runtime before a line of our code runs. Measured on the BlueStacks box, that
  * was about two seconds of every cold start and most of why the dev build felt
  * so much slower than a release one. `verify` is the cheapest filter that
@@ -466,7 +470,7 @@ tasks.matching { it.name == "installDevDebug" }.configureEach { finalizedBy(veri
 
 /*
  * The watch app rides inside the phone app, so "BitChord for Wear OS" in
- * Settings can put it on a watch â€” or update it â€” with no computer involved.
+ * Settings can put it on a watch ÔÇö or update it ÔÇö with no computer involved.
  *
  * Each phone variant carries the watch build of the same flavor *and* build
  * type: the same package (dev with dev, prod with prod) and the same signing

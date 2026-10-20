@@ -152,6 +152,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.music.bitchord.data.model.durationMillis
 import com.music.bitchord.data.scrobbling.LastFM
+import com.music.bitchord.data.settings.AppFontFamily
 import com.music.bitchord.data.settings.AppSettings
 import com.music.bitchord.data.settings.LibrarySort
 import com.music.bitchord.data.settings.ThemeMode
@@ -323,6 +324,8 @@ import com.music.bitchord.ui.replay.ReplayStories
 import com.music.bitchord.ui.replay.ReplayStoryPage
 import com.music.bitchord.ui.replay.rememberReplayState
 import com.music.bitchord.ui.theme.BitChordTheme
+import com.music.bitchord.ui.theme.CormorantGaramond
+import com.music.bitchord.ui.theme.SFProDisplay
 import com.music.bitchord.ui.theme.rememberArtworkPalette
 import com.music.bitchord.data.canvas.AppleArtistArtRepository
 import com.music.bitchord.data.canvas.keyColors
@@ -366,6 +369,7 @@ class MainActivity : AppCompatActivity() {
         MusicLink.consume(intent)
         setContent {
             val theme by AppSettings.themeMode.collectAsStateWithLifecycle()
+            val appFont by AppSettings.fontFamily.collectAsStateWithLifecycle()
             val highPerformance by AppSettings.highPerformanceMode.collectAsStateWithLifecycle()
             val liquidGlassEnabled by AppSettings.liquidGlass.collectAsStateWithLifecycle()
             val iosOverscrollFactory = rememberIosOverscrollFactory()
@@ -379,7 +383,8 @@ class MainActivity : AppCompatActivity() {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
             }
-            BitChordTheme(darkTheme = darkTheme) {
+            val fontFamily = if (appFont == AppFontFamily.CORMORANT) CormorantGaramond else SFProDisplay
+            BitChordTheme(darkTheme = darkTheme, fontFamily = fontFamily) {
                 // The glass surfaces sample this layer, and a layer records only
                 // what is drawn into it — which, for BitChord, is a page that
                 // paints no background of its own. Everywhere a page is not
@@ -556,6 +561,10 @@ private fun BitChordApp(
      */
     var webSession by remember { mutableStateOf<WebSessionMode?>(null) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
+    var showWeather by rememberSaveable { mutableStateOf(false) }
+    var showNotes by rememberSaveable { mutableStateOf(false) }
+    var showPets by rememberSaveable { mutableStateOf(false) }
+    var showCloud by rememberSaveable { mutableStateOf(false) }
     // Replay: the page, the stories over it, and the share sheet over those.
     // Three states rather than one enum because they stack — the stories are
     // opened from the page and the share sheet from either, and closing one

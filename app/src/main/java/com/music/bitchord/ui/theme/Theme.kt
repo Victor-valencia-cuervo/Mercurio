@@ -59,18 +59,31 @@ val SFProDisplay = FontFamily(
     Font(R.font.sf_pro_display_heavy, FontWeight.W800),
 )
 
+val CormorantGaramond = FontFamily(
+    Font(R.font.cormorant_garamond, FontWeight.W300),
+    Font(R.font.cormorant_garamond, FontWeight.W400),
+    Font(R.font.cormorant_garamond, FontWeight.W500),
+    Font(R.font.cormorant_garamond, FontWeight.W600),
+    Font(R.font.cormorant_garamond, FontWeight.W700),
+    Font(R.font.cormorant_garamond_italic, FontWeight.W300, style = androidx.compose.ui.text.font.FontStyle.Italic),
+    Font(R.font.cormorant_garamond_italic, FontWeight.W400, style = androidx.compose.ui.text.font.FontStyle.Italic),
+    Font(R.font.cormorant_garamond_italic, FontWeight.W500, style = androidx.compose.ui.text.font.FontStyle.Italic),
+    Font(R.font.cormorant_garamond_italic, FontWeight.W600, style = androidx.compose.ui.text.font.FontStyle.Italic),
+    Font(R.font.cormorant_garamond_italic, FontWeight.W700, style = androidx.compose.ui.text.font.FontStyle.Italic),
+)
+
 // Heavy, tight typography — the backbone of the Apple Music look.
-private val BitChordTypography = Typography(
-    displayLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 34.sp, letterSpacing = (-0.8).sp),
-    headlineLarge = TextStyle(fontWeight = FontWeight.W800, fontSize = 30.sp, letterSpacing = (-0.7).sp),
-    headlineMedium = TextStyle(fontWeight = FontWeight.W700, fontSize = 22.sp, letterSpacing = (-0.4).sp),
-    titleLarge = TextStyle(fontWeight = FontWeight.W700, fontSize = 20.sp, letterSpacing = (-0.3).sp),
-    titleMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 16.sp, letterSpacing = (-0.2).sp),
-    bodyLarge = TextStyle(fontWeight = FontWeight.W400, fontSize = 16.sp),
-    bodyMedium = TextStyle(fontWeight = FontWeight.W400, fontSize = 14.sp),
-    labelMedium = TextStyle(fontWeight = FontWeight.W600, fontSize = 12.sp),
-    labelSmall = TextStyle(fontWeight = FontWeight.W600, fontSize = 11.sp),
-).withFamily(SFProDisplay)
+fun bitChordTypography(family: FontFamily): Typography = Typography(
+    displayLarge = TextStyle(fontFamily = family, fontWeight = FontWeight.W800, fontSize = 34.sp, letterSpacing = (-0.8).sp),
+    headlineLarge = TextStyle(fontFamily = family, fontWeight = FontWeight.W800, fontSize = 30.sp, letterSpacing = (-0.7).sp),
+    headlineMedium = TextStyle(fontFamily = family, fontWeight = FontWeight.W700, fontSize = 22.sp, letterSpacing = (-0.4).sp),
+    titleLarge = TextStyle(fontFamily = family, fontWeight = FontWeight.W700, fontSize = 20.sp, letterSpacing = (-0.3).sp),
+    titleMedium = TextStyle(fontFamily = family, fontWeight = FontWeight.W600, fontSize = 16.sp, letterSpacing = (-0.2).sp),
+    bodyLarge = TextStyle(fontFamily = family, fontWeight = FontWeight.W400, fontSize = 16.sp),
+    bodyMedium = TextStyle(fontFamily = family, fontWeight = FontWeight.W400, fontSize = 14.sp),
+    labelMedium = TextStyle(fontFamily = family, fontWeight = FontWeight.W600, fontSize = 12.sp),
+    labelSmall = TextStyle(fontFamily = family, fontWeight = FontWeight.W600, fontSize = 11.sp),
+)
 
 /** Applies [family] to every style in the scale, so nothing is left on Roboto. */
 private fun Typography.withFamily(family: FontFamily) = Typography(
@@ -94,11 +107,12 @@ private fun Typography.withFamily(family: FontFamily) = Typography(
 @Composable
 fun BitChordTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    fontFamily: FontFamily = SFProDisplay,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography = BitChordTypography,
+        typography = bitChordTypography(fontFamily),
         content = content,
     )
 }
